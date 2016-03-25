@@ -8,6 +8,7 @@ void watcher(zhandle_t *zk,int type, int state, const char *path,void *context) 
 	std::promise<bool> *prom  = (std::promise<bool>*) context;
 	if(type == ZOO_SESSION_EVENT) {
 		if(state == ZOO_CONNECTED_STATE) {
+			std::cout << "Connection is complete " << std::endl;
 			prom->set_value(true);
 		}
 	}
@@ -32,13 +33,12 @@ void ZooKeeper::startZk(std::future<bool>& fut) {
 		std::cout << " Starting the connection"<< std::endl;
 		d_zkHandle = zookeeper_init(d_hostPort.c_str(),watcher,10000,0,&d_promise,0);
 	}
-	fut = d_promise.get_future();
 }
 
 void ZooKeeper::stopZk() {
-	//if(d_zkHandle) {
-	//	zookeeper_close(d_zkHandle);
-	//}
+	if(d_zkHandle) {
+		zookeeper_close(d_zkHandle);
+	}
 }
 
 } // closing namespace
