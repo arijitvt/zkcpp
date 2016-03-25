@@ -21,13 +21,13 @@ class ZooKeeper {
 		int 				d_port;
 		std::string    		d_hostPort;
 		zhandle_t           *d_zkHandle;
-		std::promise<bool> 	d_promise;
+
 
 	public:
 		ZooKeeper(const std::string& host, int port);
-		void startZk(std::future<bool>& fut) ;
+		void startZk(std::promise<bool>& prom);
 		void stopZk();
-		void createPath(const std::string& path);
+		void createPath(const std::string& path,std::promise<bool>& prom);
 };
 
 } //closing namespace

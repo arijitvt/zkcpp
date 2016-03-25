@@ -9,8 +9,11 @@ using namespace zk;
 
 int main() {
 	ZooKeeper zk ("localhost",2181);
-	zk.startZk(fut);
-	sleep(5);
+	std::promise<bool> prom; 
+	std::future<bool> fut = prom.get_future();
+	zk.startZk(prom);
+	bool isConnected = fut.get(); 
+	std::cout << " Connection to zookeeper established : " << isConnected << endl;
 	zk.stopZk();
 	return 0;
 }
