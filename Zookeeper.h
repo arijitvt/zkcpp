@@ -13,7 +13,15 @@
 #include <future>
 
 
-namespace zk  {
+namespace zkcpp  {
+
+enum NODE_TYPE {
+	PERSISTENT,
+	EPHEMERAL,
+	SEQUENTIAL,
+	EPHEMERAL_SEQ,
+
+};
 
 class ZooKeeper {
 	private:
@@ -22,13 +30,24 @@ class ZooKeeper {
 		std::string    		d_hostPort;
 		zhandle_t           *d_zkHandle;
 
+		int  createNodeSync(const std::string& path, 
+				const std::string& value,
+				NODE_TYPE flag,       
+				std::promise<bool>& prom);
 
 	public:
 		ZooKeeper(const std::string& host, int port);
 		void startZk(std::promise<bool>& prom);
 		void stopZk();
-		void createPath(const std::string& path,std::promise<bool>& prom);
-};
+		int createEphemeralNodeSync(const std::string& nodeName,
+				const std::string& value,std::promise<bool>& prom);
+
+		int createSequentialNodeSync(const std::string& nodeName,
+				const std::string& value,std::promise<bool>& prom);
+
+		int createPersistentNodeSync(const std::string& nodeName,
+				const std::string& value,std::promise<bool>& prom);
+};                         
 
 } //closing namespace
 
