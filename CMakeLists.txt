@@ -1,0 +1,13 @@
+cmake_minimum_required( VERSION 2.6)
+project(ZKCPP)
+set(ZKCPP_VERSION_MAJOR 0)
+set(ZKCPP_VERSION_MINOR 1)
+include_directories(src)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+add_compile_options(-std=c++11)
+set(SOURCES 
+	src/Zookeeper.cpp 
+	src/main.cpp)
+add_executable(ZKCPP ${SOURCES})
+target_link_libraries(ZKCPP zookeeper_mt)
+target_link_libraries(ZKCPP pthread)
