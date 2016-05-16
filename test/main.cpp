@@ -1,13 +1,41 @@
 #include <string>
 #include <iostream>
-#include <Zookeeper.h>
 #include <unistd.h>
 #include <thread>
+#include <vector>
+#include <algorithm>
+#include <thread>
+#include <zkcpp_leader_manager.h>
+#include <zkcpp_participant.h>
 using namespace std; 
 using namespace zkcpp;
 
 
+void oldtestcode();
+void leaderManagerTesting();
+
 int main() {
+	leaderManagerTesting();
+	while(1){}
+	return 0;
+}
+
+void leaderManagerTesting() {
+	string applicationName("Arijit");
+	std::shared_ptr<LeaderManager>  leaderMgrPtr (new LeaderManager(applicationName));
+	Participant first(leaderMgrPtr,"first");
+	Participant second(leaderMgrPtr,"second");
+	Participant third(leaderMgrPtr,"third");
+	vector<Participant> participants = {first,second,third};
+	for_each(participants.begin(),participants.end(),[](const Participant &p){
+		p.offerLeaderShip();
+	});
+
+
+}
+
+
+void oldtestcode() {
 	ZooKeeper zk ("localhost",2181);
 	std::promise<bool> prom; 
 	std::future<bool> fut = prom.get_future();
@@ -29,5 +57,4 @@ int main() {
 	bool isPersistentNodeCreated = persistentNodeCreationFuture.get();
 	std::cout << " Is persistent Node created : " << isPersistentNodeCreated << std::endl;
 	zk.stopZk();
-	return 0;
 }

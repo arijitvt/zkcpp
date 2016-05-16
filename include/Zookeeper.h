@@ -47,6 +47,8 @@ class ZooKeeper {
 
 		int createPersistentNodeSync(const std::string& nodeName,
 				const std::string& value,std::promise<bool>& prom);
+
+		bool doesNodeExistsSync(const std::string& nodeName);
 };                         
 
 } //closing namespace
