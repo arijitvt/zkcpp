@@ -25,7 +25,20 @@ void zkcpp_string_stat_completion(int rc, const char *name,
 		std::cout << "Node creation is UnSuccessful with error code " 
 			<< rc << std::endl;
 		prom->set_value(false);
-		
+		                                           
+	}
+}
+
+void zkcpp_stat_completion(int rc, const struct Stat *stat, 
+		const void *data) {
+	std::cout << "Stat completion is getting called " << std::endl;
+	std::promise<bool> *prom  = (std::promise<bool>*) data; 
+	if ( rc == 0){
+		std::cout << " Node checking is successful" << std::endl;
+		prom->set_value(true);
+	} else {
+		std::cerr << " Node value checking is incomplete " << std::endl;
+		prom->set_value(false);
 	}
 }
 
@@ -105,6 +118,19 @@ int ZooKeeper::createSequentialNodeSync(const std::string& nodeName,
 int ZooKeeper::createPersistentNodeSync(const std::string& nodeName,
 		const std::string& value,std::promise<bool>& prom) {
 	return createNodeSync(nodeName,value,PERSISTENT,prom);
+}
+
+bool ZooKeeper::doesNodeExistsSync(const std::string& nodeName) {
+	std::promise<bool> nodeExistsProm ;
+	int rc = zoo_aexists(d_zkHandle,nodeName.c_str(),0,
+			zkcpp_stat_completion,&nodeExistsProm);
+	std::cout << "Return code for the api " << rc << std::endl;
+	if(!rc) {
+		std::future<bool> existsFuture = nodeExistsProm.get_future();
+		return existsFuture.get();
+	} else {
+		return false ;
+	}
 }
 
 } // closing namespace

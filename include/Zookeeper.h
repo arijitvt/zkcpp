@@ -1,6 +1,6 @@
 
 #ifndef INCLUDE_ZK
-#define INCLUDE_ ZK
+#define INCLUDE_ZK
 
 /***
  * @Author : Arijit Chattopadhyay
@@ -15,13 +15,13 @@
 
 namespace zkcpp  {
 
-enum NODE_TYPE {
+typedef enum {
 	PERSISTENT,
 	EPHEMERAL,
 	SEQUENTIAL,
 	EPHEMERAL_SEQ,
 
-};
+} NODE_TYPE;
 
 class ZooKeeper {
 	private:
@@ -47,6 +47,8 @@ class ZooKeeper {
 
 		int createPersistentNodeSync(const std::string& nodeName,
 				const std::string& value,std::promise<bool>& prom);
+
+		bool doesNodeExistsSync(const std::string& nodeName);
 };                         
 
 } //closing namespace
