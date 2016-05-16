@@ -7,6 +7,7 @@
 #include <thread>
 #include <zkcpp_leader_manager.h>
 #include <zkcpp_participant.h>
+#include <Zookeeper.h>
 using namespace std; 
 using namespace zkcpp;
 
