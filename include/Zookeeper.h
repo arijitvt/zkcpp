@@ -35,6 +35,8 @@ class ZooKeeper {
 				NODE_TYPE flag,       
 				std::promise<bool>& prom);
 
+				
+
 	public:
 		ZooKeeper(const std::string& host, int port);
 		void startZk(std::promise<bool>& prom);
@@ -47,6 +49,9 @@ class ZooKeeper {
 
 		int createPersistentNodeSync(const std::string& nodeName,
 				const std::string& value,std::promise<bool>& prom);
+
+		int deleteNodeSync(const std::string& path,
+				std::promise<bool>& prom);
 
 		bool doesNodeExistsSync(const std::string& nodeName);
 };                         

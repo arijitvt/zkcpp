@@ -28,6 +28,18 @@ LeaderManager::LeaderManager(const std::string& applicationName)
 }
 
 LeaderManager::~LeaderManager() {
+	std::cout << "Exiting leader manager for application : " << d_applicationName << std::endl;
+	std::promise<bool> destroyApplicationPromise; 
+	std::string applicationPath = "/"+d_applicationName ;
+	d_zooKeeperP->deleteNodeSync(applicationPath,destroyApplicationPromise);
+	std::cout << " Deletion complete waiting for the  future " << std::endl;
+	std::future<bool> destructionFuture = destroyApplicationPromise.get_future(); 
+	bool isDestroyed = destructionFuture.get(); 
+	if(isDestroyed) {
+		std::cout << " Application is successfully terminated" << std::endl;
+	} else {
+		std::cerr << " Error in application termination  " << std::endl;
+	}
 	d_zooKeeperP->stopZk();
 
 }
@@ -38,7 +50,7 @@ bool LeaderManager::doLeaderElection(const std::string& participantName) {
 	std::string leaderPath = "/"+d_applicationName+"/leader";
 	std::cout << "Complete leader path : " << leaderPath << std::endl;
 	std::promise<bool> leaderPromise;
-	d_zooKeeperP->createEphemeralNodeSync(leaderPath,d_applicationName,leaderPromise);
+	d_zooKeeperP->createEphemeralNodeSync(leaderPath,participantName,leaderPromise);
 	std::future<bool> leaderFuture = leaderPromise.get_future();
 	return leaderFuture.get();
 }

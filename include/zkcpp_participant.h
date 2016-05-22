@@ -20,6 +20,15 @@ class Participant {
 		virtual ~Participant();
 		bool offerLeaderShip()const;
 
+		const std::string& getName() const {
+			return d_name;
+		}
+
+		const std::string& getIp() const {
+			return d_ip;
+		}
+
+
 
 	private:
 		LeaderManagerP 	d_leaderManagerP;

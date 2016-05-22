@@ -4,7 +4,7 @@
 #include <thread>
 #include <vector>
 #include <algorithm>
-#include <thread>
+#include <chrono>
 #include <zkcpp_leader_manager.h>
 #include <zkcpp_participant.h>
 #include <Zookeeper.h>
@@ -17,7 +17,6 @@ void leaderManagerTesting();
 
 int main() {
 	leaderManagerTesting();
-	while(1){}
 	return 0;
 }
 
@@ -32,6 +31,7 @@ void leaderManagerTesting() {
 		p.offerLeaderShip();
 	});
 
+	std::this_thread::sleep_for(std::chrono::seconds(5));
 
 }
 

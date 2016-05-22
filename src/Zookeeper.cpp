@@ -42,6 +42,19 @@ void zkcpp_stat_completion(int rc, const struct Stat *stat,
 	}
 }
 
+void zkcpp_void_completion(int rc, const void *data) {
+	std::cout << " Void completion return code : " << rc << std::endl;
+	std::promise<bool> *prom = (std::promise<bool>*) data; 
+	if(rc == 0 ) {
+		std::cout << " Void completion status is success " << std::endl;
+		prom->set_value(true);
+	} else {
+		std::cerr << " Void completion error code : " << rc << std::endl;
+		prom->set_value(false);
+	}
+
+}
+
 } // closing namespace
 
 namespace zkcpp {
@@ -103,6 +116,14 @@ int ZooKeeper::createNodeSync(const std::string& path,
 	}
 
 	return rc ; 
+}
+
+int ZooKeeper::deleteNodeSync(const std::string& path, 
+		std::promise<bool>& prom) {
+	std::cout << " deleting ----- " << path << std::endl;
+    int rc =  zoo_adelete(d_zkHandle,path.c_str(),-1,zkcpp_void_completion,(void*) &prom);
+	return rc; 
+	
 }
 
 

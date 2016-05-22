@@ -32,9 +32,9 @@ class Configuration {
 
 	private:
 		std::string d_applicationName;
-		int d_numOfLeaders; 
-		int d_healthCheckInterval;
-		int d_maxNumOfParticipants;
+		int 		d_numOfLeaders; 
+		int 		d_healthCheckInterval;
+		int 		d_maxNumOfParticipants;
 };
 
 }// closing package namespace
