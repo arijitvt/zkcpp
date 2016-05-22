@@ -26,12 +26,12 @@ void leaderManagerTesting() {
 	Participant first(leaderMgrPtr,"first");
 	Participant second(leaderMgrPtr,"second");
 	Participant third(leaderMgrPtr,"third");
-	vector<Participant> participants = {first,second,third};
-	for_each(participants.begin(),participants.end(),[](const Participant &p){
-		p.offerLeaderShip();
+	vector<Participant*> participants = {&first,&second,&third};
+	for_each(participants.begin(),participants.end(),[](const Participant *p){
+		p->offerLeaderShip();
 	});
 
-	std::this_thread::sleep_for(std::chrono::seconds(5));
+	std::this_thread::sleep_for(std::chrono::seconds(15));
 
 }
 

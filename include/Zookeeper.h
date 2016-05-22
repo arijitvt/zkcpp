@@ -52,6 +52,8 @@ class ZooKeeper {
 
 		int deleteNodeSync(const std::string& path,
 				std::promise<bool>& prom);
+                                            
+		int getPathInfoSync(const std::string& path, std::string& nodeData );
 
 		bool doesNodeExistsSync(const std::string& nodeName);
 };                         

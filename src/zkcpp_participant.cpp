@@ -13,10 +13,11 @@ Participant::Participant(LeaderManagerP leaderManager,
 		const std::string& name)
 :d_leaderManagerP(leaderManager),
 	d_name(name) {	
+	d_leaderManagerP->registerParticipant(name);
 }
 
 Participant::~Participant() {
-
+	d_leaderManagerP->unregisterParticipant(d_name);
 }
 
 bool Participant::offerLeaderShip() const{

@@ -29,6 +29,11 @@ class Participant {
 		}
 
 
+	private:
+		Participant(const Participant& rhs) ; // Do not implement
+		void operator=(const Participant& rhs) ; //Do not implement
+			
+
 
 	private:
 		LeaderManagerP 	d_leaderManagerP;

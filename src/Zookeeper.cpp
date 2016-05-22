@@ -52,6 +52,20 @@ void zkcpp_void_completion(int rc, const void *data) {
 		std::cerr << " Void completion error code : " << rc << std::endl;
 		prom->set_value(false);
 	}
+}
+
+void zkcpp_data_completion_for_get (int rc, const char *value, int valueLength, 
+		const struct Stat *stat, const void *data) {
+	std::cout << " Data completion for " << value  << std::endl;
+	std::promise<std::string> *prom = const_cast <std::promise<std::string> *>(
+		reinterpret_cast<const std::promise<std::string> *> (data)); 
+	if (rc == 0 ) {
+		std::cout << " Success in getting the value " << std::endl;
+	} else {
+		std::cerr << " Error in the data completion " << std::endl;
+	}
+	std::string s(value);
+	prom->set_value(s);
 
 }
 
@@ -118,13 +132,6 @@ int ZooKeeper::createNodeSync(const std::string& path,
 	return rc ; 
 }
 
-int ZooKeeper::deleteNodeSync(const std::string& path, 
-		std::promise<bool>& prom) {
-	std::cout << " deleting ----- " << path << std::endl;
-    int rc =  zoo_adelete(d_zkHandle,path.c_str(),-1,zkcpp_void_completion,(void*) &prom);
-	return rc; 
-	
-}
 
 
 int ZooKeeper::createEphemeralNodeSync(const std::string& nodeName, 
@@ -136,10 +143,37 @@ int ZooKeeper::createSequentialNodeSync(const std::string& nodeName,
 		const std::string& value,std::promise<bool>& prom) {
 	return createNodeSync(nodeName,value,SEQUENTIAL,prom);
 }
+
 int ZooKeeper::createPersistentNodeSync(const std::string& nodeName,
 		const std::string& value,std::promise<bool>& prom) {
 	return createNodeSync(nodeName,value,PERSISTENT,prom);
 }
+
+int ZooKeeper::deleteNodeSync(const std::string& path, 
+		std::promise<bool>& prom) {
+	std::cout << " deleting ----- " << path << std::endl;
+    int rc =  zoo_adelete(d_zkHandle,path.c_str(),-1,zkcpp_void_completion,(void*) &prom);
+	return rc; 
+	
+}
+
+int ZooKeeper::getPathInfoSync (const std::string& path,std::string& nodeData) {
+	std::promise<std::string> pathPromise; 
+	int rc = zoo_aget(d_zkHandle,path.c_str(),1,zkcpp_data_completion_for_get,(void*) &pathPromise);
+	std::cout << " Return code for getPathInfoSync " << rc << std::endl;
+	if(rc == 0) {
+		std::future<std::string> pathValueFuture = pathPromise.get_future(); 
+		nodeData = pathValueFuture.get();
+		std::cout << " Node : " << path << "  Data : " << nodeData << std::endl;
+		return 0;
+	
+	} else {
+		std::cerr << " Error in getting information " << std::endl;
+		return rc;
+	}
+}
+
+
 
 bool ZooKeeper::doesNodeExistsSync(const std::string& nodeName) {
 	std::promise<bool> nodeExistsProm ;
